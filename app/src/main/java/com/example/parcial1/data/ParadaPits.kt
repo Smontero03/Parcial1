@@ -1,7 +1,7 @@
 package com.example.parcial1.data
 
 data class ParadaPits (
-
+    var id:Int=0,
     var piloto: String,
     var escuderia:String,
     var tiempo: Double,
