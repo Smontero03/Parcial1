@@ -4,11 +4,11 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class ParadaPitsDB(context: Context): SQLiteOpenHelper(context,"ParadaPits.db",null,1) {
+ open class ParadaPitsDB(context: Context): SQLiteOpenHelper(context,"ParadaPits.db",null,1) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("""
-            CREATE TABLE ParadaPits(
+            CREATE TABLE IF NOT EXISTS ParadaPits(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
               piloto TEXT,
               escuderia TEXT,

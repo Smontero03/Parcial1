@@ -7,21 +7,34 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.parcial1.data.ParadaPits
+import com.example.parcial1.data.ParadaPitsRepositorio
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(onNavigateToResumen: () -> Unit) {
-    var piloto by remember { mutableStateOf("Lewis Hamilton") }
-    var escuderia by remember { mutableStateOf("Mercedes") }
-    var tiempo by remember { mutableStateOf("12.5") }
-    var cambioNeumaticos by remember { mutableStateOf("Soft") }
-    var numeroNeumaticos by remember { mutableStateOf("4") }
-    var estado by remember { mutableStateOf("Ok") }
+    val context = LocalContext.current
+    var piloto by remember { mutableStateOf("") }
+    var escuderia by remember { mutableStateOf("") }
+    var tiempo by remember { mutableStateOf("") }
+
+    val neumaticosOptions = listOf("Soft", "Medium", "Hard")
+    var neumaticoSeleccionado by remember { mutableStateOf(neumaticosOptions[0]) }
+    var neumaticosExpanded by remember { mutableStateOf(false) }
+
+    var numeroNeumaticos by remember { mutableStateOf("") }
+
+    val estadoOptions = listOf("OK", "Fallido")
+    var estadoSeleccionado by remember { mutableStateOf(estadoOptions[0]) }
+    var estadoExpanded by remember { mutableStateOf(false) }
+
     var motivoFallo by remember { mutableStateOf("") }
-    var mecanico by remember { mutableStateOf("John Doe") }
-    var fechaHora by remember { mutableStateOf("12/05/2024 14:30") }
+    var mecanico by remember { mutableStateOf("") }
+    var fechaHora by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -66,13 +79,36 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = cambioNeumaticos,
-                    onValueChange = { cambioNeumaticos = it },
-                    label = { Text("CAMBIO DE NEUMÁTICOS") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
-                )
+                ExposedDropdownMenuBox(
+                    expanded = neumaticosExpanded,
+                    onExpandedChange = { neumaticosExpanded = !neumaticosExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = neumaticoSeleccionado,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("CAMBIO DE NEUMÁTICOS") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = neumaticosExpanded)
+                        },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    )
+                    ExposedDropdownMenu(
+                        expanded = neumaticosExpanded,
+                        onDismissRequest = { neumaticosExpanded = false }
+                    ) {
+                        neumaticosOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    neumaticoSeleccionado = option
+                                    neumaticosExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = numeroNeumaticos,
@@ -82,13 +118,36 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = estado,
-                    onValueChange = { estado = it },
-                    label = { Text("ESTADO") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
-                )
+                ExposedDropdownMenuBox(
+                    expanded = estadoExpanded,
+                    onExpandedChange = { estadoExpanded = !estadoExpanded }
+                ) {
+                    OutlinedTextField(
+                        value = estadoSeleccionado,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("ESTADO") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = estadoExpanded)
+                        },
+                        modifier = Modifier.fillMaxWidth().menuAnchor(),
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    )
+                    ExposedDropdownMenu(
+                        expanded = estadoExpanded,
+                        onDismissRequest = { estadoExpanded = false }
+                    ) {
+                        estadoOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    estadoSeleccionado = option
+                                    estadoExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = motivoFallo,
@@ -121,7 +180,23 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
 
                 Row {
                     Button(
-                        onClick = { /* TODO */ },
+                        onClick = {
+
+                            val repo = ParadaPitsRepositorio(context)
+                            val parada = ParadaPits(
+                                piloto = piloto,
+                                escuderia = escuderia,
+                                tiempo = tiempo.toDoubleOrNull() ?: 0.0,
+                                neumatico = neumaticoSeleccionado,
+                                numNeumaticos = numeroNeumaticos.toIntOrNull() ?: 0,
+                                estado = estadoSeleccionado,
+                                motivo = motivoFallo,
+                                mecanico = mecanico,
+                                fechaHora = fechaHora)
+
+                            repo.insertar(parada)
+                            onNavigateToResumen()
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                         modifier = Modifier.weight(1f)
                     ) {

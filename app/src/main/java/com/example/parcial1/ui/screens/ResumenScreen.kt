@@ -7,8 +7,12 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.parcial1.data.ParadaPits
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -17,8 +21,14 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ResumenScreen(
     onNavigateToRegistro: () -> Unit,
-    onNavigateToListado: () -> Unit
+    onNavigateToListado: () -> Unit,
+    viewModel: ResumenViewModel = viewModel()
 ) {
+    val promedioTiempo by viewModel.promedioTiempo.collectAsState()
+    val totalRegistros by viewModel.totalRegistros.collectAsState()
+    val menorTiempo by viewModel.menorTiempo.collectAsState()
+    val ultimasParadas by viewModel.ultimasParadas.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,9 +51,9 @@ fun ResumenScreen(
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                InfoRow(icon = { Icon(Icons.Default.DirectionsCar, contentDescription = "Pit stop más rápido", tint = Color.Red) }, text = "Pit stop más rápido: 2.3 s")
-                InfoRow(icon = { Icon(Icons.Default.AccessTime, contentDescription = "Promedio de tiempos") }, text = "Promedio de tiempos: 2.82 s")
-                InfoRow(icon = { Text("S", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurface) }, text = "Total de paradas: 5")
+                InfoRow(icon = { Icon(Icons.Default.DirectionsCar, contentDescription = "Pit stop más rápido", tint = Color.Red) }, text = "Pit stop más rápido: %.2f s".format(menorTiempo))
+                InfoRow(icon = { Icon(Icons.Default.AccessTime, contentDescription = "Promedio de tiempos") }, text = "Promedio de tiempos: %.2f s".format(promedioTiempo))
+                InfoRow(icon = { Text("S", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurface) }, text = "Total de paradas: $totalRegistros")
             }
         }
 
@@ -61,7 +71,7 @@ fun ResumenScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                BarChart()
+                BarChart(paradas = ultimasParadas)
             }
         }
 
@@ -102,8 +112,10 @@ fun InfoRow(icon: @Composable () -> Unit, text: String) {
 }
 
 @Composable
-fun BarChart() {
-    val barValues = listOf(5f, 4f, 3f, 2f, 1f)
+fun BarChart(paradas: List<ParadaPits>) {
+    val tiempos = paradas.map { it.tiempo.toFloat() }
+    val maxTiempo = tiempos.maxOrNull() ?: 1f
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -111,13 +123,17 @@ fun BarChart() {
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        barValues.forEach { value ->
-            Box(
-                modifier = Modifier
-                    .width(30.dp)
-                    .fillMaxHeight(value / barValues.maxOrNull()!!)
-                    .background(Color.Red)
-            )
+        if (tiempos.isEmpty()) {
+            Text("No hay datos para mostrar")
+        } else {
+            tiempos.forEach { tiempo ->
+                Box(
+                    modifier = Modifier
+                        .width(30.dp)
+                        .fillMaxHeight(tiempo / maxTiempo)
+                        .background(Color.Red)
+                )
+            }
         }
     }
     Text(
