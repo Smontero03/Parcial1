@@ -13,17 +13,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.parcial1.data.ParadaPits
+import com.example.parcial1.data.factory.ListadoViewModelFactory
 
 @Composable
 fun ListadoScreen(
     onNavigateToResumen: () -> Unit,
-    viewModel: ListadoViewModel = viewModel()
+    viewModel: ListadoViewModel = viewModel(factory = ListadoViewModelFactory(LocalContext.current))
 ) {
     val pitStops by viewModel.pitStops.collectAsState()
     var searchQuery by remember { mutableStateOf("") }

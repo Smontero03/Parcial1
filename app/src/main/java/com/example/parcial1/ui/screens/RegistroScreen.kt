@@ -36,6 +36,22 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
     var mecanico by remember { mutableStateOf("") }
     var fechaHora by remember { mutableStateOf("") }
 
+    val textFieldColors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
+        focusedBorderColor = Color.Red,
+        unfocusedBorderColor = Color.Gray,
+        focusedPlaceholderColor = Color.Gray,
+        unfocusedPlaceholderColor = Color.Gray
+    )
+
+    val dropdownColors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
+        focusedBorderColor = Color.Red,
+        unfocusedBorderColor = Color.Gray
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +76,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     onValueChange = { piloto = it },
                     label = { Text("PILOTO") },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    colors = textFieldColors
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -68,7 +84,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     onValueChange = { escuderia = it },
                     label = { Text("ESCUDERÍA") },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    colors = textFieldColors
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -76,7 +92,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     onValueChange = { tiempo = it },
                     label = { Text("TIEMPO TOTAL (S)") },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    colors = textFieldColors
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 ExposedDropdownMenuBox(
@@ -92,7 +108,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = neumaticosExpanded)
                         },
                         modifier = Modifier.fillMaxWidth().menuAnchor(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                        colors = dropdownColors
                     )
                     ExposedDropdownMenu(
                         expanded = neumaticosExpanded,
@@ -115,7 +131,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     onValueChange = { numeroNeumaticos = it },
                     label = { Text("NUMERO DE NEUMÁTICOS CAMBIADOS") },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    colors = textFieldColors
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 ExposedDropdownMenuBox(
@@ -131,7 +147,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = estadoExpanded)
                         },
                         modifier = Modifier.fillMaxWidth().menuAnchor(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                        colors = dropdownColors
                     )
                     ExposedDropdownMenu(
                         expanded = estadoExpanded,
@@ -154,7 +170,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                     onValueChange = { motivoFallo = it },
                     label = { Text("MOTIVO DEL FALLO") },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                    colors = textFieldColors
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -164,7 +180,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                         onValueChange = { mecanico = it },
                         label = { Text("MECÁNICO PRINCIPAL") },
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                        colors = textFieldColors
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     OutlinedTextField(
@@ -172,7 +188,7 @@ fun RegistroScreen(onNavigateToResumen: () -> Unit) {
                         onValueChange = { fechaHora = it },
                         label = { Text("FECHA Y HORA DEL PIT STOP") },
                         modifier = Modifier.weight(1f),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.Red, unfocusedBorderColor = Color.Gray)
+                        colors = textFieldColors
                     )
                 }
 
