@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
-    // La única fuente de verdad para saber la pantalla actual
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -67,25 +66,23 @@ fun MyApp() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Botón "Atrás" con tu lógica de CICLO INVERSO
                 IconButton(onClick = {
                     val prevScreen = when (currentRoute) {
                         "resumen" -> "listado"
                         "registro" -> "resumen"
                         "listado" -> "registro"
-                        else -> "resumen" // Ruta por defecto
+                        else -> "resumen"
                     }
                     navController.navigate(prevScreen) { launchSingleTop = true }
                 }) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Anterior")
                 }
-                // Botón "Adelante" con tu lógica de CICLO HACIA ADELANTE
                 IconButton(onClick = {
                     val nextScreen = when (currentRoute) {
                         "resumen" -> "registro"
                         "registro" -> "listado"
                         "listado" -> "resumen"
-                        else -> "resumen" // Ruta por defecto
+                        else -> "resumen"
                     }
                     navController.navigate(nextScreen) { launchSingleTop = true }
                 }) {
@@ -99,7 +96,6 @@ fun MyApp() {
             startDestination = "resumen",
             modifier = Modifier.padding(innerPadding)
         ) {
-            // Limpio: ya no se gestiona el estado aquí
             composable("resumen") {
                 ResumenScreen(
                     onNavigateToRegistro = { navController.navigate("registro") },
@@ -110,6 +106,7 @@ fun MyApp() {
                 RegistroScreen(onNavigateToResumen = { navController.navigate("resumen") })
             }
             composable("listado") {
+                // ¡CORRECCIÓN AQUÍ! Pasando la acción de navegación.
                 ListadoScreen(onNavigateToResumen = { navController.navigate("resumen") })
             }
         }

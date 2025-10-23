@@ -29,7 +29,15 @@ class ListadoViewModel(application: Application) : AndroidViewModel(application)
     fun eliminarPitStop(pitStop: ParadaPits) {
         viewModelScope.launch {
             repositorio.eliminar(pitStop.id)
-            cargarPitStops()
+            cargarPitStops() // Recarga la lista para reflejar la eliminación
+        }
+    }
+
+    // --- FUNCIÓN AÑADIDA Y CORREGIDA ---
+    fun actualizarPitStop(pitStop: ParadaPits) {
+        viewModelScope.launch {
+            repositorio.actualizar(pitStop)
+            cargarPitStops() // Recarga la lista para reflejar la actualización
         }
     }
 }
