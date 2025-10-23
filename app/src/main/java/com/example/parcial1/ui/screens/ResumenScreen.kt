@@ -14,15 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.parcial1.data.ParadaPits
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.parcial1.data.factory.ResumenViewModelFactory
 
 @Composable
 fun ResumenScreen(
     onNavigateToRegistro: () -> Unit,
     onNavigateToListado: () -> Unit,
-    viewModel: ResumenViewModel = viewModel()
+    viewModel: ResumenViewModel = viewModel(factory = ResumenViewModelFactory(LocalContext.current))
 ) {
     val promedioTiempo by viewModel.promedioTiempo.collectAsState()
     val totalRegistros by viewModel.totalRegistros.collectAsState()
@@ -32,7 +34,7 @@ fun ResumenScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F7))
+            .background(Color(0xFFF2F2F2F7))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
